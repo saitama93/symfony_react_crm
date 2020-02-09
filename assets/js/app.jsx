@@ -13,12 +13,8 @@ import "../css/app.css";
 import NavBar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import { HashRouter, Switch, Route } from "react-router-dom";
-import CustomersPage from "./pages/Customers";
-
-// Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
-// import $ from 'jquery';
-
-console.log("Hello Webpack Encore! Edit me in assets/js/app.js ");
+import CustomersPage from "./pages/CustomersPage";
+import CustomersPageWithPagination from "./pages/CustomersPageWithPagination";
 
 const App = () => {
   return (
@@ -27,7 +23,7 @@ const App = () => {
 
       <main className="container pt-5">
         <Switch>
-          <Route path="/customers" component={CustomersPage} />
+          <Route path="/customers" component={CustomersPageWithPagination} />
           <Route path="/" component={HomePage} />
         </Switch>
       </main>
