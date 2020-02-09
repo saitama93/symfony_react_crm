@@ -39,7 +39,6 @@ class CustomerUserSubcriber implements EventSubscriberInterface
 
             // Assigner l'utilisateur au Custormer qu'on est en train de créer
             $customer->setUser($user);
-            dd($customer);
         }
     }
 }
