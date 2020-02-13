@@ -16,6 +16,7 @@ import { HashRouter, Switch, Route } from "react-router-dom";
 import CustomersPage from "./pages/CustomersPage";
 import CustomersPageWithPagination from "./pages/CustomersPageWithPagination";
 import InvoicesPage from "./pages/InvoicesPage";
+import LoginPage from "./pages/LoginPage";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Switch>
           <Route path="/customers" component={CustomersPage} />
           <Route path="/invoices" component={InvoicesPage} />
+          <Route path="/login" component={LoginPage} />
           <Route path="/" component={HomePage} />
         </Switch>
       </main>
