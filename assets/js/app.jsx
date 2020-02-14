@@ -16,7 +16,9 @@ AuthAPI.setup();
 
 const App = () => {
   // TODO: Il faudrait par défault qu'on demande à notre authAPIsi on est connecté ou pas
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    AuthAPI.isAuthenticated()
+  );
   console.log(isAuthenticated);
 
   return (
