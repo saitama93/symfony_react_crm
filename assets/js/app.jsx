@@ -1,35 +1,19 @@
 // Les imports importants
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-
-require("../css/app.css");
+import { HashRouter, Route, Switch, withRouter } from "react-router-dom";
 import NavBar from "./components/Navbar";
-import HomePage from "./pages/HomePage";
-import {
-  HashRouter,
-  Switch,
-  Route,
-  withRouter,
-  Redirect
-} from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
+import AuhtContext from "./contexts/AuhtContext";
 import CustomersPage from "./pages/CustomersPage";
-import CustomersPageWithPagination from "./pages/CustomersPageWithPagination";
+import HomePage from "./pages/HomePage";
 import InvoicesPage from "./pages/InvoicesPage";
 import LoginPage from "./pages/LoginPage";
 import AuthAPI from "./services/authAPI";
-import AuhtContext from "./contexts/AuhtContext";
+
+require("../css/app.css");
 
 AuthAPI.setup();
-
-const PrivateRoute = ({ path, component }) => {
-  const { isAuthenticated } = useContext(AuhtContext);
-
-  return isAuthenticated ? (
-    <Route path={path} component={component} />
-  ) : (
-    <Redirect to="/login" />
-  );
-};
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -38,13 +22,13 @@ const App = () => {
 
   const NavBarWithRooter = withRouter(NavBar);
 
-  const contextValue = {
-    isAuthenticated,
-    setIsAuthenticated
-  };
-
   return (
-    <AuhtContext.Provider value={contextValue}>
+    <AuhtContext.Provider
+      value={{
+        isAuthenticated,
+        setIsAuthenticated
+      }}
+    >
       <HashRouter>
         <NavBarWithRooter />
 
