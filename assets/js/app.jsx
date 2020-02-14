@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 require("../css/app.css");
 import NavBar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
-import { HashRouter, Switch, Route } from "react-router-dom";
+import { HashRouter, Switch, Route, withRouter } from "react-router-dom";
 import CustomersPage from "./pages/CustomersPage";
 import CustomersPageWithPagination from "./pages/CustomersPageWithPagination";
 import InvoicesPage from "./pages/InvoicesPage";
@@ -15,15 +15,18 @@ import AuthAPI from "./services/authAPI";
 AuthAPI.setup();
 
 const App = () => {
-  // TODO: Il faudrait par défault qu'on demande à notre authAPIsi on est connecté ou pas
   const [isAuthenticated, setIsAuthenticated] = useState(
     AuthAPI.isAuthenticated()
   );
-  console.log(isAuthenticated);
+
+  const NavBarWithRooter = withRouter(NavBar);
 
   return (
     <HashRouter>
-      <NavBar isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated} />
+      <NavBarWithRooter
+        isAuthenticated={isAuthenticated}
+        onLogout={setIsAuthenticated}
+      />
 
       <main className="container pt-5">
         <Switch>
@@ -31,7 +34,9 @@ const App = () => {
           <Route path="/invoices" component={InvoicesPage} />
           <Route
             path="/login"
-            render={props => <LoginPage onLogin={setIsAuthenticated} />}
+            render={props => (
+              <LoginPage onLogin={setIsAuthenticated} {...props} />
+            )}
           />
           <Route path="/" component={HomePage} />
         </Switch>

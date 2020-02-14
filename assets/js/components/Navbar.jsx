@@ -2,10 +2,11 @@ import React from "react";
 import authAPI from "../services/authAPI";
 import { NavLink } from "react-router-dom";
 
-const NavBar = ({ isAuthenticated, onLogout }) => {
+const NavBar = ({ isAuthenticated, onLogout, history }) => {
   const handleLogout = () => {
     authAPI.logout();
     onLogout(false);
+    history.push("/login");
   };
 
   return (
