@@ -35,10 +35,10 @@ const App = () => {
 
         <main className="container pt-5">
           <Switch>
+            <Route path="/login" component={LoginPage} />
+            <PrivateRoute path="/invoices" component={InvoicesPage} />
             <PrivateRoute path="/customers/:id" component={CustomerPage} />
             <PrivateRoute path="/customers" component={CustomersPage} />
-            <PrivateRoute path="/invoices" component={InvoicesPage} />
-            <Route path="/login" component={LoginPage} />
             <Route path="/" component={HomePage} />
           </Switch>
         </main>

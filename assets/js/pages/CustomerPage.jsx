@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 const CustomerPage = props => {
+  const { id = "new" } = props.match.params;
+
   const [customer, setCustomer] = useState({
-    lastName: "Roronoa",
-    firstName: "Zoro",
+    lastName: "",
+    firstName: "",
     email: "",
     company: ""
   });
@@ -23,23 +25,66 @@ const CustomerPage = props => {
     setCustomer({ ...customer, [name]: value });
   };
 
-  const handleSubmit = async event => {
-    event.preventDefault();
+  const [editing, setEditing] = useState(false);
 
+  const fecthCustomer = async id => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/customers",
-        customer
-      );
-      console.log(response.data);
+      const data = await axios
+        .get("http://localhost:8080/api/customers/" + id)
+        .then(response => response.data);
+      const { firstName, lastName, email, company } = data;
+
+      setCustomer({ firstName, lastName, email, company });
     } catch (error) {
       console.log(error.response);
     }
   };
 
+  useEffect(() => {
+    if (id !== "new") {
+      setEditing(true);
+      fecthCustomer(id);
+    }
+  }, [id]);
+
+  const handleSubmit = async event => {
+    event.preventDefault();
+
+    try {
+      if (editing) {
+        const response = await axios.put(
+          "http://localhost:8080/api/customers/" + id,
+          customer
+        );
+        // TODO: Flash notification de success
+      } else {
+        const response = await axios.post(
+          "http://localhost:8080/api/customers",
+          customer
+        );
+        // TODO: Flash notification de success
+        props.history.replace("/customers");
+      }
+      setErrors({});
+    } catch (error) {
+      if (error.response.data.violations) {
+        const apiErrors = {};
+        error.response.data.violations.forEach(violation => {
+          apiErrors[violation.propertyPath] = violation.message;
+        });
+
+        setErrors(apiErrors);
+
+        // TODO: Flash notification des erreurs
+      }
+    }
+  };
+
   return (
     <>
-      <h1>Création d'un client</h1>
+      {(!editing && <h1>Création d'un client</h1>) || (
+        <h1>Modification d'un client</h1>
+      )}
 
       <form onSubmit={handleSubmit}>
         <Field
