@@ -122,6 +122,12 @@ const CustomersPage = props => {
                 {customer.totalAmount.toLocaleString()} €
               </td>
               <td>
+                <Link
+                  to={"/customers/" + customer.id}
+                  className="btn btn-sm btn-primary mr-1"
+                >
+                  Modifier
+                </Link>
                 <button
                   onClick={() => handleDelete(customer.id)}
                   disabled={customer.invoices.length > 0}
