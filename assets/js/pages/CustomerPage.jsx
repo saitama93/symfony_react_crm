@@ -21,7 +21,7 @@ const CustomerPage = ({ match, history }) => {
   });
 
   // Gestions des changement des input dans le formulaire
-  const handleChane = ({ currentTarget }) => {
+  const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget;
     setCustomer({ ...customer, [name]: value });
   };
@@ -91,12 +91,12 @@ const CustomerPage = ({ match, history }) => {
           label="Nom de famille"
           placeholder="Nom de famille du client"
           value={customer.lastName}
-          onChange={handleChane}
+          onChange={handleChange}
           error={errors.lastName}
         />
         <Field
           value={customer.firstName}
-          onChange={handleChane}
+          onChange={handleChange}
           name="firstName"
           label="Prénom"
           placeholder="Prénom du client"
@@ -104,7 +104,7 @@ const CustomerPage = ({ match, history }) => {
         />
         <Field
           value={customer.email}
-          onChange={handleChane}
+          onChange={handleChange}
           name="email"
           label="Email"
           placeholder="Adresse email du client"
@@ -112,7 +112,7 @@ const CustomerPage = ({ match, history }) => {
         />
         <Field
           value={customer.company}
-          onChange={handleChane}
+          onChange={handleChange}
           name="company"
           label="Entreprise"
           placeholder="Entreprise du client"
