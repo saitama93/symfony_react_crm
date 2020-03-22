@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Field from "../components/forms/Field";
 import Select from "../components/forms/Select";
-import { Link } from "react-router-dom";
 import CustomersAPI from "../services/customersAPI";
-import axios from "axios";
+import invoicesAPI from "../services/invoicesAPI";
 
 const InvoicePage = ({ history, match }) => {
   const { id = "new" } = match.params;
@@ -23,6 +23,7 @@ const InvoicePage = ({ history, match }) => {
   const [customers, setCustomers] = useState([]);
   const [editing, setEditing] = useState(false);
 
+  //   Récupération des clients
   const fetchCustomers = async () => {
     try {
       const data = await CustomersAPI.findAll();
@@ -32,27 +33,30 @@ const InvoicePage = ({ history, match }) => {
         setInvoice({ ...invoice, customer: data[0].id });
     } catch (error) {
       console.log(error.response);
+      //   TODO: Flash notif erreur
+      history.replace("/invoices");
     }
   };
 
+  //   Récupération d'une facture
   const fetchInvoice = async id => {
     try {
-      const data = await axios
-        .get("http://localhost:8080/api/invoices/" + id)
-        .then(response => response.data);
-
-      const { amount, status, customer } = data;
+      const { amount, status, customer } = await invoicesAPI.find(id);
 
       setInvoice({ amount, status, customer: customer.id });
     } catch (error) {
       console.log(error.response);
+      //   TODO: Flash notif erreur
+      history.replace("/invoices");
     }
   };
 
+  //   Récupération de la liste des clients à chaque chargement du composant
   useEffect(() => {
     fetchCustomers();
   }, []);
 
+  //   Récupération de la bonne facture quand l'id de l'url change
   useEffect(() => {
     if (id !== "new") {
       setEditing(true);
@@ -66,28 +70,16 @@ const InvoicePage = ({ history, match }) => {
     setInvoice({ ...invoice, [name]: value });
   };
 
+  //   Gestion de la soumission du formulaire
   const handleSubmit = async event => {
     event.preventDefault();
 
     try {
       if (editing) {
-        const response = await axios.put(
-          "http://localhost:8080/api/invoices/" + id,
-          {
-            ...invoice,
-            customer: `/api/customers/${invoice.customer}`
-          }
-        );
+        await invoicesAPI.update(id, invoice);
         //   TODO: Flash notifi success
-        console.log(response);
       } else {
-        const response = await axios.post(
-          "http://localhost:8080/api/invoices",
-          {
-            ...invoice,
-            customer: `/api/customers/${invoice.customer}`
-          }
-        );
+        await invoicesAPI.create(invoice);
         //   TOFO: Flash notification success
         history.replace("/invoices");
       }
