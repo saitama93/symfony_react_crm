@@ -3,6 +3,7 @@ import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
 import CustomersAPI from "../services/customersAPI";
 import { toast } from "react-toastify";
+import FormContentLoader from "../components/loaders/FormContentLoader";
 
 const CustomerPage = ({ match, history }) => {
   const { id = "new" } = match.params;
@@ -21,6 +22,8 @@ const CustomerPage = ({ match, history }) => {
     company: ""
   });
 
+  const [loading, setLoading] = useState(false);
+
   // Gestions des changement des input dans le formulaire
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget;
@@ -36,6 +39,7 @@ const CustomerPage = ({ match, history }) => {
         id
       );
       setCustomer({ firstName, lastName, email, company });
+      setLoading(false);
     } catch (error) {
       // Notification flash d'une erreur
       toast.error("Le client n'a pas pu être chargé");
@@ -46,6 +50,7 @@ const CustomerPage = ({ match, history }) => {
   // Chargement du custormer si besoin au chargement du composant ou au changement de l'identifiant
   useEffect(() => {
     if (id !== "new") {
+      setLoading(true);
       setEditing(true);
       fecthCustomer(id);
     }
@@ -87,49 +92,53 @@ const CustomerPage = ({ match, history }) => {
         <h1>Modification d'un client</h1>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <Field
-          name="lastName"
-          label="Nom de famille"
-          placeholder="Nom de famille du client"
-          value={customer.lastName}
-          onChange={handleChange}
-          error={errors.lastName}
-        />
-        <Field
-          value={customer.firstName}
-          onChange={handleChange}
-          name="firstName"
-          label="Prénom"
-          placeholder="Prénom du client"
-          error={errors.firstName}
-        />
-        <Field
-          value={customer.email}
-          onChange={handleChange}
-          name="email"
-          label="Email"
-          placeholder="Adresse email du client"
-          error={errors.email}
-        />
-        <Field
-          value={customer.company}
-          onChange={handleChange}
-          name="company"
-          label="Entreprise"
-          placeholder="Entreprise du client"
-          error={errors.company}
-        />
+      {loading && <FormContentLoader />}
 
-        <div className="form-group">
-          <button type="submit" className="btn btn-success">
-            Ajouter
-          </button>
-          <Link to="/customers" className="btn btn-link">
-            Retour sur la liste des clients
-          </Link>
-        </div>
-      </form>
+      {!loading && (
+        <form onSubmit={handleSubmit}>
+          <Field
+            name="lastName"
+            label="Nom de famille"
+            placeholder="Nom de famille du client"
+            value={customer.lastName}
+            onChange={handleChange}
+            error={errors.lastName}
+          />
+          <Field
+            value={customer.firstName}
+            onChange={handleChange}
+            name="firstName"
+            label="Prénom"
+            placeholder="Prénom du client"
+            error={errors.firstName}
+          />
+          <Field
+            value={customer.email}
+            onChange={handleChange}
+            name="email"
+            label="Email"
+            placeholder="Adresse email du client"
+            error={errors.email}
+          />
+          <Field
+            value={customer.company}
+            onChange={handleChange}
+            name="company"
+            label="Entreprise"
+            placeholder="Entreprise du client"
+            error={errors.company}
+          />
+
+          <div className="form-group">
+            <button type="submit" className="btn btn-success">
+              Ajouter
+            </button>
+            <Link to="/customers" className="btn btn-link">
+              Retour sur la liste des clients
+            </Link>
+          </div>
+        </form>
+      )}
     </>
   );
 };
