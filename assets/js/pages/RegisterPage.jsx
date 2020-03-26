@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
 import UserApi from "../services/usersApi";
+import { toast } from "react-toastify";
 
 const RegisterPage = ({ history }) => {
   const [user, setUser] = useState({
@@ -32,16 +33,18 @@ const RegisterPage = ({ history }) => {
 
     const apiErrors = {};
 
-    if (user.password != user.passwordConfirm) {
+    if (user.password !== user.passwordConfirm) {
       apiErrors.password =
         "Votre confirmation de mot de passe a échoué, try again !";
       setErrors(apiErrors);
+      toast.error("Des erreurs dans votre formulairre !");
       return;
     }
 
     try {
       await UserApi.register(user);
       //   TODO: Flash notif success
+      toast.success("Votre compte à bien été créé");
       setErrors({});
       history.replace("/login");
 
@@ -58,6 +61,7 @@ const RegisterPage = ({ history }) => {
       }
 
       //   TODO: Flash error
+      toast.error("Des erreurs dans votre formulairre !");
     }
   };
 

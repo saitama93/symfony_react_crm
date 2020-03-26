@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
 import CustomersAPI from "../services/customersAPI";
+import { toast } from "react-toastify";
 
 const CustomerPage = ({ match, history }) => {
   const { id = "new" } = match.params;
@@ -36,8 +37,8 @@ const CustomerPage = ({ match, history }) => {
       );
       setCustomer({ firstName, lastName, email, company });
     } catch (error) {
-      console.log(error.response);
-      // TODO: Notification flash d'une erreur
+      // Notification flash d'une erreur
+      toast.error("Le client n'a pas pu être chargé");
       history.replace("/customers");
     }
   };
@@ -55,15 +56,17 @@ const CustomerPage = ({ match, history }) => {
     event.preventDefault();
 
     try {
+      setErrors({});
       if (editing) {
         await CustomersAPI.update(id, customer);
-        // TODO: Flash notification de success
+        // Flash notification de success
+        toast.success("Le client a bien été modifié");
       } else {
         await CustomersAPI.create(customer);
-        // TODO: Flash notification de success
+        // Flash notification de success
+        toast.success("Le client a bien été créé");
         history.replace("/customers");
       }
-      setErrors({});
     } catch ({ response }) {
       const { violations } = response.data;
       if (violations) {
@@ -71,10 +74,9 @@ const CustomerPage = ({ match, history }) => {
         violations.forEach(({ propertyPath, message }) => {
           apiErrors[propertyPath] = message;
         });
-
         setErrors(apiErrors);
-
-        // TODO: Flash notification des erreurs
+        // Flash notification des erreurs
+        toast.error("Des erreurs dans votre formulaire");
       }
     }
   };
