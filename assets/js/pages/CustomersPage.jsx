@@ -42,6 +42,8 @@ const CustomersPage = props => {
       toast.success("Le client a bien été supprimé");
     } catch (error) {
       setCustomers(originalCustomers);
+      console.log(error);
+
       toast.error("La suppression du client n'a pas pu fonctionner");
     }
     // 2eme façon de faire le delete
